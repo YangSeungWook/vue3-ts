@@ -32,11 +32,11 @@ import TodoListItem from "./components/TodoListItem.vue";
 
 const STORAGE_KEY = "vue-todo-ts-v1";
 const storage = {
-  save(todoItems: any[]) {
+  save(todoItems: Todo[]) {
     const parsed = JSON.stringify(todoItems);
     localStorage.setItem(STORAGE_KEY, parsed);
   },
-  fetch() {
+  fetch(): Todo[] {
     const todoItems = localStorage.getItem(STORAGE_KEY) || "[]";
     const result = JSON.parse(todoItems);
     return result;
@@ -75,7 +75,16 @@ export default Vue.extend({
       this.todoText = "";
     },
     fetchTodoItems() {
-      this.todoItems = storage.fetch();
+      this.todoItems = storage.fetch().sort((a, b) => {
+        //위에 fetch쪽 리턴 타입에 Todo[] 가 있기때문에 타입지정을 안해도 오류 안남
+        if (a.title < b.title) {
+          return -1;
+        }
+        if (a.title > b.title) {
+          return 1;
+        }
+        return 0;
+      });
     },
     removeTodoItem(index: number) {
       console.log("remove", index);
