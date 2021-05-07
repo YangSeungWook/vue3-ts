@@ -1,18 +1,29 @@
 <template>
   <div>
-    <canvas id="myChart"></canvas>
+    <canvas ref="myChart" id="myChart"></canvas>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { VueConstructor } from "vue";
 import Chart from "chart.js/auto";
+import { MyVueRefs } from "./types/index";
 
-export default Vue.extend({
+export default (Vue as MyVueRefs<{ myChart: HTMLCanvasElement }>).extend({
+  // export default (Vue as VueConstructor<
+  //   Vue & { $refs: { myChart: HTMLCanvasElement } } //REFS를 통한 타입정의
+  // >).extend({
   mounted() {
-    var ctx = (document.getElementById(
-      "myChart"
-    ) as HTMLCanvasElement).getContext("2d");
+    this.$refs.my;
+    // var canvasElement = document.getElementById("myChart") as HTMLCanvasElement;
+
+    //var canvasElement = this.$refs.myChart as HTMLCanvasElement;
+    var canvasElement = this.$refs.myChart; //위에서 refs 타입정의해서 as를 이용한 타입정의 안해도됨
+
+    const ctx = canvasElement.getContext("2d");
+    if (!ctx) {
+      return;
+    }
     var myChart = new Chart(ctx, {
       type: "bar",
       data: {
